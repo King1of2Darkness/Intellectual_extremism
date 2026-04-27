@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>التطرف الفكري</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;cursor:none!important}
+body{direction:rtl;text-align:right;font-family:Tahoma,Arial,sans-serif;line-height:1.9;background:#050a12;color:#eaeaea;overflow-x:hidden}
+
+/* ===== شاشة الترحيب ===== */
+#intro-screen{position:fixed;top:0;left:0;right:0;bottom:0;background:radial-gradient(ellipse at center,#000820 0%,#000005 100%);z-index:999999;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden}
+#lightning-canvas{position:absolute;top:0;left:0;width:100%;height:100%;z-index:1}
+#intro-title{font-family:Tahoma,Arial,sans-serif;font-size:3.5em;color:#fff;text-align:center;letter-spacing:8px;position:relative;z-index:5;opacity:0;padding:30px 60px;animation:title-appear 1.4s ease 0.5s forwards;background:rgba(0,10,30,0.6);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid rgba(0,188,212,0.3);border-radius:20px;box-shadow:0 0 60px rgba(0,188,212,0.15)}
+@keyframes title-appear{0%{opacity:0;transform:scale(0.8)}60%{opacity:1;transform:scale(1.05)}100%{opacity:1;transform:scale(1);text-shadow:0 0 40px #00bcd4,0 0 80px #0055ff}}
+.intro-snow{position:absolute;pointer-events:none;animation:intro-fall linear forwards;z-index:4;user-select:none}
+@keyframes intro-fall{0%{transform:translateY(-50px) translateX(0) rotate(0deg);opacity:0}5%{opacity:1}95%{opacity:1}100%{transform:translateY(110vh) translateX(var(--drift)) rotate(var(--spin));opacity:0}}
+#intro-screen.fade-out{animation:screen-fadeout 1.2s ease forwards}
+@keyframes screen-fadeout{0%{opacity:1}100%{opacity:0;pointer-events:none}}
+#main-site{opacity:0;transition:opacity 1.2s ease}
+#main-site.visible{opacity:1}
+
+/* ===== شريط التقدم ===== */
+#progress-bar{position:fixed;top:0;right:0;height:4px;width:0%;background:linear-gradient(to left,#00bcd4,#0055ff);z-index:99999;transition:width 0.1s ease}
+
+/* ===== الهيدر ===== */
+#site-header{position:fixed;top:0;right:0;left:0;z-index:99998;background:rgba(5,10,18,0.95);backdrop-filter:blur(12px);border-bottom:1px solid rgba(0,188,212,0.3);display:flex;align-items:center;justify-content:space-between;padding:0 20px;height:65px}
+.header-title{color:#00bcd4;font-size:1.3em;font-weight:bold;letter-spacing:2px;display:flex;flex-direction:column;align-items:flex-end;animation:header-lightning 4s infinite}
+.header-title span{font-size:0.5em;color:#80deea;letter-spacing:1px;font-weight:normal}
+@keyframes header-lightning{0%,89%,100%{text-shadow:0 0 15px rgba(0,188,212,0.5);color:#00bcd4}90%{text-shadow:0 0 60px #fff,0 0 100px #00bcd4,0 0 150px #0055ff;color:#fff}93%{text-shadow:0 0 15px rgba(0,188,212,0.5);color:#00bcd4}96%{text-shadow:0 0 80px #fff,0 0 120px #00bcd4;color:#fff}}
+
+
+/* ===== شريط التنقل بين الصفحات ===== */
+#pages-nav{position:fixed;top:65px;right:0;left:0;z-index:99997;background:rgba(5,10,18,0.92);backdrop-filter:blur(8px);border-bottom:1px solid rgba(0,188,212,0.15);display:flex;align-items:center;overflow-x:auto;scrollbar-width:none;padding:0 10px;height:46px}
+#pages-nav::-webkit-scrollbar{display:none}
+.page-tab{flex-shrink:0;padding:0 16px;height:46px;display:flex;align-items:center;gap:6px;color:#778899;font-size:0.78em;cursor:pointer!important;border-bottom:2px solid transparent;transition:all 0.25s;white-space:nowrap;user-select:none}
+.page-tab:hover{color:#00bcd4;background:rgba(0,188,212,0.05)}
+.page-tab.active{color:#00bcd4;border-bottom-color:#00bcd4;background:rgba(0,188,212,0.08)}
+.page-tab .tab-icon{font-size:0.95em}
+.tab-sep{color:#1a2535;padding:0 4px;font-size:0.7em;flex-shrink:0}
+
+/* ===== دوائر الخلفية ===== */
+.bg-glow{position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(90px);animation:glow-pulse 7s ease-in-out infinite alternate}
+@keyframes glow-pulse{0%{opacity:0.03;transform:scale(1)}100%{opacity:0.10;transform:scale(1.2)}}
+
+/* ===== الحاوية الرئيسية ===== */
+.main-container{max-width:900px;margin:0 auto;padding:130px 25px 30px;position:relative;z-index:1}
+
+/* ===== الصفحات ===== */
+.page-content{display:none}
+.page-content.active{display:block}
+
+/* ===== عناصر المحتوى ===== */
+.section-box{background:rgba(15,25,40,0.88);padding:20px 25px;border-radius:12px;margin-bottom:12px;border-right:4px solid #00bcd4}
+h1{color:#fff;text-align:center;border-bottom:2px solid #00bcd4;padding-bottom:12px;font-size:2em;text-shadow:0 0 25px rgba(0,188,212,0.6);letter-spacing:3px;margin-bottom:20px}
+h2{color:#00bcd4;margin-top:30px;border-bottom:1px solid #1a2535;padding-bottom:6px;font-size:1.35em}
+h3{color:#80deea;margin-top:16px;margin-bottom:6px;font-size:1.05em}
+p{margin-bottom:10px;font-size:0.97em}
+ul{padding-right:20px;margin:8px 0}
+ul li{margin-bottom:10px;line-height:1.8}
+.img-container{text-align:center;margin:20px 0}
+.img-container img{max-width:90%;border-radius:12px;box-shadow:0 0 25px rgba(0,188,212,0.3)}
+.highlight-box{background:linear-gradient(135deg,#0d2233,#0a1a2e);border:2px solid #00bcd4;border-radius:14px;padding:25px 30px;margin:25px 0;text-align:center;font-size:1.05em;color:#e0f7fa;box-shadow:0 0 30px rgba(0,188,212,0.2)}
+
+/* ===== بطاقة طريقة المشاهدة ===== */
+.watch-guide{background:linear-gradient(135deg,#0a1f2e,#061524);border:2px solid #00bcd4;border-radius:16px;padding:25px 30px;margin-bottom:30px;box-shadow:0 0 40px rgba(0,188,212,0.25)}
+.watch-guide h2{color:#00bcd4;margin-top:0;font-size:1.25em;border:none;text-align:center}
+.watch-guide .step{display:flex;align-items:flex-start;gap:15px;margin:15px 0;padding:12px 15px;background:rgba(0,188,212,0.07);border-radius:10px}
+.watch-guide .step-num{background:#00bcd4;color:#000;font-weight:bold;border-radius:50%;min-width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-size:0.9em;flex-shrink:0}
+
+/* ===== عنوان الصفحة مع أيقونة ===== */
+.page-header{display:flex;align-items:center;gap:15px;margin-bottom:20px;padding-bottom:15px;border-bottom:1px solid rgba(0,188,212,0.2)}
+.page-icon{font-size:2.2em;filter:drop-shadow(0 0 10px rgba(0,188,212,0.5))}
+.page-title-wrap h1{border:none;padding:0;margin:0;text-align:right;font-size:1.7em}
+.page-title-wrap p{color:#8899aa;font-size:0.88em;margin:4px 0 0}
+
+/* ===== بطاقات صغيرة في الصفحة الرئيسية ===== */
+.pages-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:20px 0}
+.page-card{background:rgba(15,25,40,0.88);border:1px solid rgba(0,188,212,0.2);border-radius:12px;padding:18px;cursor:pointer!important;transition:all 0.25s;text-align:center}
+.page-card:hover{border-color:#00bcd4;background:rgba(0,188,212,0.08);transform:translateY(-2px)}
+.page-card .pc-icon{font-size:1.8em;display:block;margin-bottom:8px}
+.page-card .pc-title{color:#00bcd4;font-size:0.9em;font-weight:bold;display:block;margin-bottom:5px}
+.page-card .pc-desc{color:#778899;font-size:0.75em;line-height:1.5}
+
+/* ===== الفوتر ===== */
+footer{text-align:center;padding:30px 20px;margin-top:40px;border-top:1px solid #1a3040;color:#556677;font-size:0.88em}
+footer .team-name{color:#00bcd4;font-weight:bold;font-size:1.1em}
+footer .footer-note{color:#334455;font-size:0.78em;margin-top:8px}
+
+/* ===== زر العودة للأعلى ===== */
+#back-to-top{position:fixed;bottom:25px;left:25px;background:#00bcd4;color:#000;border:none;border-radius:50%;width:44px;height:44px;font-size:1.3em;cursor:pointer!important;z-index:9999;display:none;box-shadow:0 0 15px rgba(0,188,212,0.5);font-weight:bold}
+
+
+
+/* ===== كيرسور ===== */
+#custom-cursor{position:fixed;width:18px;height:18px;background:radial-gradient(circle,#fff,#00bcd4);border-radius:50%;pointer-events:none;z-index:9999999;transform:translate(-50%,-50%);box-shadow:0 0 10px #00bcd4,0 0 25px #0055ff,0 0 50px rgba(0,188,212,0.5);transition:transform 0.05s ease}
+.cursor-trail{position:fixed;border-radius:50%;pointer-events:none;z-index:9999998;transform:translate(-50%,-50%);background:radial-gradient(circle,#00bcd4,#0055ff);animation:trail-fade linear forwards}
+@keyframes trail-fade{0%{opacity:0.8}100%{opacity:0;transform:translate(-50%,-50%) scale(0.1)}}
+
+/* ===== زر الإعدادات ===== */
+#settings-btn{background:rgba(0,188,212,0.1);border:1px solid #00bcd4;color:#00bcd4;border-radius:8px;padding:7px 14px;cursor:pointer!important;font-size:0.82em;font-family:Tahoma;transition:all 0.2s;white-space:nowrap;display:flex;align-items:center;gap:6px}
+#settings-btn:hover{background:rgba(0,188,212,0.25)}
+
+/* ===== لوحة الإعدادات - overlay ===== */
+#settings-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:9999990;opacity:0;pointer-events:none;transition:opacity 0.3s;backdrop-filter:blur(4px)}
+#settings-overlay.open{opacity:1;pointer-events:all}
+#settings-panel{position:fixed;top:0;left:0;width:340px;height:100vh;background:rgba(6,14,26,0.98);border-left:1px solid rgba(0,188,212,0.35);z-index:9999995;transform:translateX(-100%);transition:transform 0.35s cubic-bezier(0.4,0,0.2,1);overflow-y:auto;padding:0 0 40px}
+#settings-panel.open{transform:translateX(0)}
+.sp-header{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:1px solid rgba(0,188,212,0.2);background:rgba(0,188,212,0.05);position:sticky;top:0;z-index:2}
+.sp-header h3{color:#00bcd4;font-size:1em;margin:0;display:flex;align-items:center;gap:8px}
+#settings-close{background:rgba(0,188,212,0.1);border:1px solid rgba(0,188,212,0.3);color:#00bcd4;border-radius:6px;width:30px;height:30px;cursor:pointer!important;font-size:1em;display:flex;align-items:center;justify-content:center;transition:background 0.2s}
+#settings-close:hover{background:rgba(0,188,212,0.3)}
+.sp-section{padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.05)}
+.sp-section-title{font-size:0.72em;color:#00bcd4;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:6px;opacity:0.85}
+.sp-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;gap:10px}
+.sp-row:last-child{margin-bottom:0}
+.sp-label{font-size:0.85em;color:#cdd6e0;line-height:1.4;flex:1}
+.sp-label small{display:block;color:#556677;font-size:0.8em;margin-top:2px}
+
+/* toggle switch */
+.sp-toggle{position:relative;width:42px;height:24px;flex-shrink:0}
+.sp-toggle input{opacity:0;width:0;height:0;position:absolute}
+.sp-toggle-track{position:absolute;inset:0;background:#1a2535;border-radius:24px;cursor:pointer!important;transition:background 0.25s;border:1px solid #2a3a50}
+.sp-toggle input:checked+.sp-toggle-track{background:#00bcd4;border-color:#00bcd4}
+.sp-toggle-track::after{content:'';position:absolute;width:18px;height:18px;background:#fff;border-radius:50%;top:2px;right:2px;transition:right 0.25s;box-shadow:0 1px 4px rgba(0,0,0,0.4)}
+.sp-toggle input:checked+.sp-toggle-track::after{right:calc(100% - 20px)}
+
+/* sliders */
+.sp-slider-wrap{margin-top:8px}
+.sp-slider-row{display:flex;align-items:center;gap:10px}
+.sp-slider-row input[type=range]{flex:1;accent-color:#00bcd4;height:4px;cursor:pointer!important}
+.sp-slider-val{font-size:0.8em;color:#00bcd4;min-width:32px;text-align:center}
+
+/* color buttons */
+.sp-colors{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.sp-color-btn{width:28px;height:28px;border-radius:50%;border:2px solid transparent;cursor:pointer!important;transition:transform 0.15s,border-color 0.15s}
+.sp-color-btn:hover,.sp-color-btn.active{transform:scale(1.2);border-color:#fff}
+
+/* تجاوب الموبايل ===== */
+@media(max-width:768px){.main-container{padding:125px 12px 20px}.page-tab{padding:0 10px;font-size:0.7em}h1{font-size:1.5em}#pages-nav{height:42px}#site-header{height:55px}#pages-nav{top:55px}.main-container{padding-top:115px!important}#settings-panel{width:100%;left:0}}
+</style>
+</head>
+<body>
+
+<!-- شاشة الترحيب -->
+<div id="intro-screen">
+  <canvas id="lightning-canvas"></canvas>
+  <div id="intro-title">❄ التطرف الفكري ❄</div>
+</div>
+
+<div id="main-site">
+<div id="progress-bar"></div>
+
+<!-- دوائر الخلفية -->
+<div class="bg-glow" style="width:700px;height:700px;background:#0044cc;top:-200px;right:-200px;animation-delay:0s"></div>
+<div class="bg-glow" style="width:500px;height:500px;background:#00bcd4;top:35%;left:-150px;animation-delay:2.5s"></div>
+<div class="bg-glow" style="width:600px;height:600px;background:#001a4d;bottom:5%;right:-100px;animation-delay:5s"></div>
+
+<!-- الهيدر -->
+<div id="site-header">
+  <div class="header-title">❄ التطرف الفكري<span>مدرسة عبد الملك بن مروان الثانوية</span></div>
+  <button id="settings-btn" onclick="toggleSettings()">⚙ الإعدادات</button>
+</div>
+
+<!-- لوحة الإعدادات -->
+<div id="settings-overlay" onclick="toggleSettings()"></div>
+<div id="settings-panel" role="dialog" aria-label="إعدادات إمكانية الوصول">
+  <div class="sp-header">
+    <h3>⚙ الإعدادات وإمكانية الوصول</h3>
+    <button id="settings-close" onclick="toggleSettings()" aria-label="إغلاق الإعدادات">✕</button>
+  </div>
+
+  <!-- 1. قراءة النص -->
+  <div class="sp-section">
+    <div class="sp-section-title">♿ إمكانية القراءة</div>
+
+    <div class="sp-row">
+      <div class="sp-label">حجم الخط
+        <small>تكبير أو تصغير النص في الصفحة</small>
+      </div>
+    </div>
+    <div class="sp-slider-wrap">
+      <div class="sp-slider-row">
+        <span style="font-size:0.75em;color:#556677">أ</span>
+        <input type="range" min="80" max="160" value="100" id="font-size-slider" oninput="applyFontSize(this.value)">
+        <span style="font-size:1.1em;color:#556677">أ</span>
+        <span class="sp-slider-val" id="font-size-val">100%</span>
+      </div>
+    </div>
+
+    <div class="sp-row" style="margin-top:16px">
+      <div class="sp-label">تباعد الأسطر
+        <small>زيادة المسافة بين الأسطر</small>
+      </div>
+    </div>
+    <div class="sp-slider-wrap">
+      <div class="sp-slider-row">
+        <input type="range" min="140" max="260" value="190" id="line-height-slider" oninput="applyLineHeight(this.value)">
+        <span class="sp-slider-val" id="line-height-val">1.9</span>
+      </div>
+    </div>
+
+    <div class="sp-row" style="margin-top:16px">
+      <div class="sp-label">تباعد الحروف
+        <small>زيادة المسافة بين الكلمات والحروف</small>
+      </div>
+    </div>
+    <div class="sp-slider-wrap">
+      <div class="sp-slider-row">
+        <input type="range" min="0" max="6" value="0" step="0.5" id="letter-spacing-slider" oninput="applyLetterSpacing(this.value)">
+        <span class="sp-slider-val" id="letter-spacing-val">0</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. التباين والألوان -->
+  <div class="sp-section">
+    <div class="sp-section-title">🎨 التباين والألوان</div>
+
+    <div class="sp-row">
+      <div class="sp-label">وضع التباين العالي
+        <small>يجعل النصوص أوضح للمكفوفين جزئياً</small>
+      </div>
+      <label class="sp-toggle">
+        <input type="checkbox" id="high-contrast-toggle" onchange="applyHighContrast(this.checked)">
+        <div class="sp-toggle-track"></div>
+      </label>
+    </div>
+
+    <div class="sp-row">
+      <div class="sp-label">وضع اللون الأحادي
+        <small>يلغي الألوان للمصابين بعمى الألوان</small>
+      </div>
+      <label class="sp-toggle">
+        <input type="checkbox" id="grayscale-toggle" onchange="applyGrayscale(this.checked)">
+        <div class="sp-toggle-track"></div>
+      </label>
+    </div>
+
+    <div class="sp-row">
+      <div class="sp-label">تمييز الروابط
+        <small>يضع خطاً تحت الروابط وعناصر النقر</small>
+      </div>
+      <label class="sp-toggle">
+        <input type="checkbox" id="highlight-links-toggle" onchange="applyHighlightLinks(this.checked)">
+        <div class="sp-toggle-track"></div>
+      </label>
+    </div>
+
+    <div style="margin-top:8px">
+      <div class="sp-label" style="margin-bottom:8px">لون خلفية النص
+        <small>يساعد على التخفيف من صعوبة القراءة (ديسلكسيا)</small>
+      </div>
+      <div class="sp-colors">
+        <div class="sp-color-btn active" data-bg="none" style="background:#1a2535;border-color:#00bcd4" onclick="applyTextBg('none',this)" title="بدون لون"></div>
+        <div class="sp-color-btn" data-bg="#fffde7" style="background:#fffde7" onclick="applyTextBg('#fffde7',this)" title="أصفر فاتح"></div>
+        <div class="sp-color-btn" data-bg="#e8f5e9" style="background:#e8f5e9" onclick="applyTextBg('#e8f5e9',this)" title="أخضر فاتح"></div>
+        <div class="sp-color-btn" data-bg="#e3f2fd" style="background:#e3f2fd" onclick="applyTextBg('#e3f2fd',this)" title="أزرق فاتح"></div>
+        <div class="sp-color-btn" data-bg="#fce4ec" style="background:#fce4ec" onclick="applyTextBg('#fce4ec',this)" title="وردي فاتح"></div>
+        <div class="sp-color-btn" data-bg="#2d2d2d" style="background:#2d2d2d" onclick="applyTextBg('#2d2d2d',this)" title="رمادي داكن"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. الحركة والتأثيرات -->
+  <div class="sp-section">
+    <div class="sp-section-title">🎞 الحركة والتأثيرات</div>
+
+    <div class="sp-row">
+      <div class="sp-label">تقليل الحركة
+        <small>إيقاف الرسوم المتحركة لمن يعانون من الدوار</small>
+      </div>
+      <label class="sp-toggle">
+        <input type="checkbox" id="reduce-motion-toggle" onchange="applyReduceMotion(this.checked)">
+        <div class="sp-toggle-track"></div>
+      </label>
+    </div>
+
+    <div class="sp-row">
+      <div class="sp-label">إيقاف تأثيرات الكيرسور
+        <small>إزالة الذيل المضيء خلف المؤشر</small>
+      </div>
+      <label class="sp-toggle">
+        <input type="checkbox" id="cursor-effects-toggle" onchange="applyCursorEffects(this.checked)">
+        <div class="sp-toggle-track"></div>
+      </label>
+    </div>
+
+    <div class="sp-row">
+      <div class="sp-label">إيقاف توهج الخلفية
+        <small>إزالة دوائر الضوء في الخلفية</small>
+      </div>
+      <label class="sp-toggle">
+        <input type="checkbox" id="glow-toggle" onchange="applyGlow(this.checked)">
+        <div class="sp-toggle-track"></div>
+      </label>
+    </div>
+  </div>
+
+  <!-- 4. التنقل والتركيز -->
+  <div class="sp-section">
+    <div class="sp-section-title">⌨ التنقل والتركيز</div>
+
+    <div class="sp-row">
+      <div class="sp-label">تمييز التركيز بالكيبورد
+        <small>يظهر إطاراً واضحاً حول العنصر المحدد</small>
+      </div>
+      <label class="sp-toggle">
+        <input type="checkbox" id="focus-highlight-toggle" onchange="applyFocusHighlight(this.checked)">
+        <div class="sp-toggle-track"></div>
+      </label>
+    </div>
+
+    <div class="sp-row">
+      <div class="sp-label">قراءة النص بصوت
+        <small>اضغط على أي فقرة لسماعها بصوت عالٍ</small>
+      </div>
+      <label class="sp-toggle">
+        <input type="checkbox" id="tts-toggle" onchange="applyTTS(this.checked)">
+        <div class="sp-toggle-track"></div>
+      </label>
+    </div>
+
+    <div id="tts-voice-row" class="sp-row" style="display:none;margin-top:-6px">
+      <div class="sp-label">سرعة القراءة</div>
+      <div class="sp-slider-row" style="flex:1;margin-right:10px">
+        <input type="range" min="0.5" max="2" value="1" step="0.1" id="tts-speed" oninput="document.getElementById('tts-speed-val').textContent=parseFloat(this.value).toFixed(1)+'x'">
+        <span class="sp-slider-val" id="tts-speed-val">1.0x</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. إعادة الضبط -->
+  <div class="sp-section" style="border:none">
+    <div class="sp-section-title">↺ إعادة الضبط</div>
+    <button onclick="resetAll()" style="width:100%;padding:10px;background:rgba(239,83,80,0.12);border:1px solid rgba(239,83,80,0.35);color:#ef9a9a;border-radius:8px;cursor:pointer!important;font-family:Tahoma;font-size:0.85em;transition:background 0.2s" onmouseover="this.style.background='rgba(239,83,80,0.25)'" onmouseout="this.style.background='rgba(239,83,80,0.12)'">
+      إعادة جميع الإعدادات إلى الوضع الافتراضي
+    </button>
+  </div>
+</div>
+
+<!-- شريط التنقل بين الصفحات -->
+<nav id="pages-nav">
+  <div class="page-tab active" onclick="goPage(0)" id="tab-0"><span class="tab-icon">🏠</span> الرئيسية</div>
+  <span class="tab-sep">|</span>
+  <div class="page-tab" onclick="goPage(1)" id="tab-1"><span class="tab-icon">🎬</span> الفيديو والمدخل</div>
+  <span class="tab-sep">|</span>
+  <div class="page-tab" onclick="goPage(2)" id="tab-2"><span class="tab-icon">📖</span> المفهوم والتعريف</div>
+  <span class="tab-sep">|</span>
+  <div class="page-tab" onclick="goPage(3)" id="tab-3"><span class="tab-icon">📊</span> الأسباب والتطور</div>
+  <span class="tab-sep">|</span>
+  <div class="page-tab" onclick="goPage(4)" id="tab-4"><span class="tab-icon">⚠️</span> الآثار والتأثيرات</div>
+  <span class="tab-sep">|</span>
+  <div class="page-tab" onclick="goPage(5)" id="tab-5"><span class="tab-icon">🛡️</span> الوقاية والحلول</div>
+  <span class="tab-sep">|</span>
+  <div class="page-tab" onclick="goPage(6)" id="tab-6"><span class="tab-icon">✅</span> الخاتمة</div>
+</nav>
+
+<!-- الحاوية الرئيسية -->
+<div class="main-container">
+
+<!-- ===================== صفحة 0: الرئيسية ===================== -->
+<div class="page-content active" id="page-0">
+  <h1>التطرف الفكري</h1>
+  <p style="text-align:center;color:#00bcd4;font-size:1.05em;margin:-12px 0 6px;letter-spacing:2px">مدرسة عبد الملك بن مروان الثانوية</p>
+  <p style="text-align:center;color:#8899aa;font-size:0.92em;margin-bottom:30px">مقال توعوي شامل يشرح مفهوم التطرف الفكري، أسبابه، آثاره، وطرق الوقاية منه</p>
+
+  <div class="highlight-box">
+    <h3 style="color:#00bcd4;margin-top:0">⚠️ فكرة مهمة جداً</h3>
+    <p>التطرف لا يبدأ بالعنف ولا بالكراهية الصريحة.<br><br>
+    يبدأ بـ <strong style="color:#ff8a65">عدم التقبّل</strong> ... ثم يتحول إلى <strong style="color:#ffa726">رفض</strong> ... ثم إلى <strong style="color:#ef5350">العداء الصريح</strong>.<br><br>
+    <em style="color:#80deea">من يفهم هذا المسار يستطيع إيقافه من أوله قبل فوات الأوان.</em></p>
+  </div>
+
+  <h2 style="text-align:center;border:none;margin-bottom:15px">🗂️ محتويات الموقع</h2>
+  <div class="pages-grid">
+    <div class="page-card" onclick="goPage(1)">
+      <span class="pc-icon">🎬</span>
+      <span class="pc-title">الفيديو والمدخل</span>
+      <span class="pc-desc">ابدأ من هنا — شاهد الفيديو التعليمي واقرأ مدخل الموضوع</span>
+    </div>
+    <div class="page-card" onclick="goPage(2)">
+      <span class="pc-icon">📖</span>
+      <span class="pc-title">المفهوم والتعريف</span>
+      <span class="pc-desc">ما هو التطرف الفكري؟ وكيف يختلف عن الرأي الطبيعي؟</span>
+    </div>
+    <div class="page-card" onclick="goPage(3)">
+      <span class="pc-icon">📊</span>
+      <span class="pc-title">الأسباب والتطور</span>
+      <span class="pc-desc">لماذا يتطرف الإنسان؟ وكيف تتطور الفكرة المتطرفة مراحلياً؟</span>
+    </div>
+    <div class="page-card" onclick="goPage(4)">
+      <span class="pc-icon">⚠️</span>
+      <span class="pc-title">الآثار والتأثيرات</span>
+      <span class="pc-desc">تأثير التطرف على الفرد والمجتمع ووسائل التواصل والشباب</span>
+    </div>
+    <div class="page-card" onclick="goPage(5)">
+      <span class="pc-icon">🛡️</span>
+      <span class="pc-title">الوقاية والحلول</span>
+      <span class="pc-desc">دور الأسرة والمدرسة والحوار في مواجهة التطرف</span>
+    </div>
+    <div class="page-card" onclick="goPage(6)">
+      <span class="pc-icon">✅</span>
+      <span class="pc-title">الخاتمة</span>
+      <span class="pc-desc">كيف نبني فكراً متوازناً ومجتمعاً صحياً؟</span>
+    </div>
+  </div>
+
+  <div class="section-box" style="margin-top:20px;text-align:center">
+    <p style="color:#8899aa;font-size:0.88em">استخدم شريط التنقل أعلاه للتنقل بين الصفحات، أو اضغط على البطاقات أعلاه للانتقال مباشرة.</p>
+  </div>
+</div>
+
+<!-- ===================== صفحة 1: الفيديو والمدخل ===================== -->
+<div class="page-content" id="page-1">
+  <div class="page-header">
+    <span class="page-icon">🎬</span>
+    <div class="page-title-wrap">
+      <h1>الفيديو والمدخل</h1>
+      <p>ابدأ من هنا — الخطوة الأولى في فهم التطرف الفكري</p>
+    </div>
+  </div>
+
+  <div class="watch-guide">
+    <h2>🎬 قبل ما تبدأ... اقرأ هاد أولاً</h2>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div><strong style="color:#00bcd4">شاهد الفيديو أولاً</strong><br>ابدأ بمشاهدة الفيديو التعليمي قبل أي شيء ثاني. الفيديو يعطيك صورة واضحة وكاملة عن الموضوع ويجهز ذهنك للمحتوى المكتوب. لا تتخطاه!</div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div><strong style="color:#00bcd4">استمع بتركيز</strong><br>أثناء المشاهدة ركز على الأفكار الرئيسية. لو احتجت ارجع لأي جزء لم تفهمه. خذ وقتك الكافي ولا تستعجل.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div><strong style="color:#00bcd4">اقرأ المحتوى بعدين</strong><br>بعد الفيديو، تنقل بين الصفحات باستخدام شريط التنقل أعلاه لقراءة التفاصيل الكاملة.</div>
+    </div>
+  </div>
+
+  <div style="text-align:center;margin-bottom:30px">
+    <iframe width="90%" height="430" src="https://www.youtube.com/embed/TkUWk_V_OhA" title="الفيديو التعليمي" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen style="border-radius:14px;box-shadow:0 0 35px rgba(0,188,212,0.45);max-width:800px;display:block;margin:0 auto"></iframe>
+  </div>
+
+  <div class="img-container">
+    <img src="https://s.ourouba22.com/storage/attachments/1/ttrf_901227.jpg/r/1200/ttrf_901227.jpg" alt="صورة التطرف الفكري">
+  </div>
+
+  <h2 id="intro">مدخل إلى التطرف الفكري</h2>
+  <div class="section-box">
+    <h3>أهمية فهم التطرف في المجتمع</h3>
+    <p>فهم التطرف الفكري ليس مجرد أمر أكاديمي بحت، بل هو ضرورة حياتية يحتاجها كل إنسان في عصرنا. عندما يفهم الإنسان هذه الظاهرة بعمق، يصبح قادراً على حماية نفسه وعائلته ومجتمعه من تأثيراتها الخطيرة. الوعي بالتطرف هو الخطوة الأولى نحو مجتمع صحي ومتماسك.</p>
+    <h3>لماذا يُعتبر التطرف مشكلة خطيرة؟</h3>
+    <p>التطرف الفكري خطير لأنه لا يبقى حبيس الأفكار، بل يتحول مع الوقت إلى سلوك يؤذي الفرد ومن حوله. يبدأ الأمر بفكرة تبدو بريئة، ثم يتطور إلى رفض للآخرين، ثم إلى عداء صريح، وأحياناً إلى أفعال تضر بالسلم الاجتماعي.</p>
+    <h3>انتشار الظاهرة في العصر الحديث</h3>
+    <p>مع الثورة الرقمية وانتشار وسائل التواصل الاجتماعي، أصبح التطرف ينتشر بسرعة مخيفة. الخوارزميات الذكية تعرض للإنسان فقط ما يتفق مع آرائه، مما يعزز أفكاره ويقطعه عن وجهات نظر مختلفة قد تتوازنه وتصحح مساره.</p>
+  </div>
+
+
+</div>
+
+<!-- ===================== صفحة 2: المفهوم والتعريف ===================== -->
+<div class="page-content" id="page-2">
+  <div class="page-header">
+    <span class="page-icon">📖</span>
+    <div class="page-title-wrap">
+      <h1>المفهوم والتعريف</h1>
+      <p>ما هو التطرف الفكري؟ وما الفرق بين الرأي والتطرف؟</p>
+    </div>
+  </div>
+
+  <div class="img-container">
+    <img src="https://maqall.net/wp-content/uploads/2023/04/%D9%88%D8%B6%D8%B9-%D8%A7%D9%84%D8%B7%D9%81%D9%84-%D9%8A%D8%AF%D9%87-%D8%B9%D9%84%D9%89-%D8%A7%D8%B0%D9%86%D9%87-%D8%B9%D9%86%D8%AF-%D8%A7%D9%84%D8%B5%D9%88%D8%AA-%D8%A7%D9%84%D8%B9%D8%A7%D9%84%D9%8A-1.png.webp" alt="تعريف التطرف الفكري">
+  </div>
+
+  <h2>التطرف الفكري — التعريف</h2>
+  <div class="section-box">
+    <h3>تعريف التطرف الفكري</h3>
+    <p>التطرف الفكري هو حالة ذهنية يتمسك فيها الإنسان برأي أو فكرة واحدة ويعتبرها الحقيقة المطلقة التي لا تقبل النقاش أو المراجعة، مع رفض تام لأي رأي مخالف. لا يعني التطرف أن الإنسان مخطئ دائماً في رأيه، بل يعني الطريقة المتصلبة التي يتعامل بها مع أصحاب الآراء الأخرى.</p>
+    <h3>خصائص التفكير المتطرف</h3>
+    <ul>
+      <li>رؤية الأمور بأسلوب أبيض وأسود فقط بدون أي منطقة وسطى</li>
+      <li>الاعتقاد بامتلاك الحقيقة الكاملة والمطلقة وحده دون غيره</li>
+      <li>رفض الحوار والاستماع لوجهات نظر أخرى والنظر إليها كتهديد</li>
+      <li>تصنيف الناس إلى فئتين فقط: معه تماماً أو ضده تماماً</li>
+      <li>استخدام لغة حادة ومتشددة وعدائية في التعبير عن الآراء</li>
+    </ul>
+    <h3>متى يتحول الرأي إلى تطرف؟</h3>
+    <p>امتلاك رأي قوي لا يعني التطرف. يتحول الرأي إلى تطرف عندما يرفض صاحبه الاستماع لأي دليل مخالف ويبدأ بالنظر إلى كل من يختلف معه كعدو يجب محاربته. الحد الفاصل هو الاستعداد للحوار الصادق واحترام حق الاختلاف.</p>
+  </div>
+
+  <h2>ما هو التطرف الفكري؟</h2>
+  <div class="section-box">
+    <h3>الفرق بين الرأي الطبيعي والتطرف</h3>
+    <p>الإنسان الطبيعي يملك آراءً راسخة، لكنه يقبل إمكانية الخطأ ويستمع للآخرين باحترام. أما المتطرف فيرى رأيه وكأنه حقيقة مقدسة لا يجوز التشكيك فيها. الفرق الجوهري هو المرونة الفكرية والاستعداد الصادق للتعلم.</p>
+    <h3>فقدان المرونة في التفكير</h3>
+    <p>التفكير المرن هو القدرة على تغيير الرأي عند وجود دليل جديد. المتطرف فكرياً يفقد هذه القدرة تماماً، ولا يستطيع أن يقول "ربما أكون مخطئاً". هذا الجمود الفكري يجعله يتصادم باستمرار مع محيطه.</p>
+    <h3>رفض تقبّل الآخر</h3>
+    <p>من أخطر علامات التطرف هو رفض قبول الآخر المختلف. هذا الرفض يبدأ بالكلام ثم يتطور إلى نبذ اجتماعي وقطيعة، وفي حالات أشد خطورة إلى أفعال تضر بالمجتمع.</p>
+  </div>
+
+  <h2>علامات الشخص المتطرف</h2>
+  <div class="section-box">
+    <ul>
+      <li><strong>رفض الحوار:</strong> لا يتقبل أي نقاش ويعتبره تهديداً شخصياً لهويته وقناعاته</li>
+      <li><strong>الغضب السريع:</strong> يثور بشدة لافتة عند أي انتقاد لأفكاره أو تساؤل حولها</li>
+      <li><strong>التفكير الأبيض والأسود:</strong> الناس عنده إما معه كلياً أو ضده كلياً</li>
+      <li><strong>العزلة المتزايدة:</strong> يبتعد تدريجياً عن كل من لا يشاركونه قناعاته</li>
+      <li><strong>نشر الكراهية:</strong> يسعى لإقناع الآخرين بأفكاره بطريقة عدوانية</li>
+      <li><strong>التبرير الدائم:</strong> يبرر كل أفعاله قائلاً إنها "من أجل الحق والصواب"</li>
+    </ul>
+  </div>
+
+
+</div>
+
+<!-- ===================== صفحة 3: الأسباب والتطور ===================== -->
+<div class="page-content" id="page-3">
+  <div class="page-header">
+    <span class="page-icon">📊</span>
+    <div class="page-title-wrap">
+      <h1>الأسباب والتطور</h1>
+      <p>لماذا يتطرف الإنسان؟ وكيف تتطور الفكرة مراحلياً؟</p>
+    </div>
+  </div>
+
+  <div class="img-container">
+    <img src="https://dreamsinterpretationz.com/wp-content/uploads/2023/05/%D8%AA%D9%81%D8%B3%D9%8A%D8%B1-%D8%AD%D9%84%D9%85-%D8%A7%D9%84%D8%B8%D9%84%D8%A7%D9%85-%D9%81%D9%8A-%D8%A7%D9%84%D8%B4%D8%A7%D8%B1%D8%B9-%D9%88%D8%A7%D9%84%D8%B3%D9%8A%D8%B1-%D9%81%D9%8A%D9%87-%D9%88%D9%85%D8%B4%D8%A7%D9%87%D8%AF%D8%AA%D9%87-%D9%84%D8%A7%D8%A8%D9%86-%D8%B3%D9%8A%D8%B1%D9%8A%D9%86.jpg" alt="مراحل تطور التطرف">
+  </div>
+
+  <h2>كيف يتطور التطرف؟</h2>
+  <div class="section-box">
+    <h3>المرحلة الأولى — بداية الفكرة</h3>
+    <p>كل شيء يبدأ بفكرة تبدو بريئة، قد تأتي من صديق أو مقطع فيديو أو مقال على الإنترنت. في هذه المرحلة لا يزال الإنسان قادراً على التراجع بسهولة. هذه هي اللحظة المثالية للتدخل والتصحيح.</p>
+    <h3>المرحلة الثانية — الاقتناع</h3>
+    <p>يبدأ الإنسان بالبحث المنتقى عن كل ما يؤكد الفكرة ويعززها، ويتجاهل ما يعارضها. تتراكم القناعة رويداً وتصبح جزءاً من هويته، وينسجم أكثر مع أشخاص يشاركونه الفكر مما يعزل التوازن.</p>
+    <h3>المرحلة الثالثة — التعصب</h3>
+    <p>يرفض أي نقاش بشكل كامل، ويثور بعصبية من كل من يشكك في آرائه. يبدأ بعزل نفسه عمن يختلفون معه ويصنفهم أعداء أو جهلاء، وتضيق دائرته الاجتماعية يوماً بعد يوم.</p>
+    <h3>المرحلة الرابعة — السلوك</h3>
+    <p>تنتقل الفكرة من الذهن إلى الفعل الفعلي. قد يبدأ بنشر أفكاره بعدوانية، أو قطع علاقاته بمن يختلف معهم، أو سلوكيات تضر به وبمن حوله.</p>
+  </div>
+
+  <h2>أسباب التطرف</h2>
+  <div class="section-box">
+    <h3>الجهل وقلة الوعي</h3>
+    <p>حين لا يملك الإنسان معرفة كافية بموضوع ما، يصبح أكثر عرضة للتأثر بأول فكرة تصله دون امتلاك أدوات لتقييمها. التعليم الجيد والقراءة المتنوعة هما الحصن الأول ضد التطرف.</p>
+    <h3>الشعور بالظلم أو الفشل</h3>
+    <p>الإنسان الذي يشعر بأنه مظلوم أو محروم يكون أكثر قابلية لتبني أفكار متطرفة تعطيه تفسيراً جاهزاً لمشاكله وتحدد له "عدواً" مسؤولاً عن كل ما يعانيه.</p>
+    <h3>تأثير الإنترنت ووسائل التواصل</h3>
+    <p>المحتوى المتطرف ينتشر بسرعة هائلة، والخوارزميات تعزز ما يتفق مع ميول المستخدم، مما يخلق فقاعة فكرية تحصره في رأي واحد ويعتقد أنه الرأي السائد دائماً.</p>
+    <h3>الصحبة السيئة</h3>
+    <p>المحيط الاجتماعي له تأثير هائل. الانخراط مع أشخاص يحملون أفكاراً متطرفة يجعل هذه الأفكار تبدو طبيعية ومقبولة مع مرور الوقت.</p>
+    <h3>الحالة النفسية</h3>
+    <p>القلق الشديد والاكتئاب والشعور بعدم الانتماء يجعل الإنسان يبحث عن يقين وهوية ثابتة. يجد ضالته أحياناً في الأفكار المتطرفة التي توفر إجابات قاطعة على أسئلته الوجودية.</p>
+  </div>
+
+
+</div>
+
+<!-- ===================== صفحة 4: الآثار والتأثيرات ===================== -->
+<div class="page-content" id="page-4">
+  <div class="page-header">
+    <span class="page-icon">⚠️</span>
+    <div class="page-title-wrap">
+      <h1>الآثار والتأثيرات</h1>
+      <p>على الفرد، المجتمع، الشباب، ووسائل التواصل</p>
+    </div>
+  </div>
+
+  <h2>التأثير النفسي للتطرف</h2>
+  <div class="section-box">
+    <h3>القلق والخوف المستمر</h3>
+    <p>المتطرف يعيش في حالة تأهب دائمة، يرى في كل اختلاف تهديداً وفي كل رأي مختلف هجوماً شخصياً. هذا التوتر المتواصل يولد قلقاً نفسياً مزمناً يستنزف طاقته ويؤثر على صحته الجسدية والعقلية.</p>
+    <h3>الشعور بالعزلة</h3>
+    <p>ابتعاده عن كل من يختلف معه يجعله يفقد صداقات وعلاقات ثمينة. يجد نفسه وحيداً حتى وسط الناس لأنه لا يستطيع التواصل الحقيقي مع من لا يشاركونه نفس الأفكار.</p>
+    <h3>فقدان الثقة بالآخرين</h3>
+    <p>حين يصنف الإنسان الناس إلى معه وضده، يصبح عاجزاً عن بناء علاقات صحية قائمة على الثقة. يتراكم الشك والريبة ويصبح جزءاً أساسياً من طريقة تفكيره اليومية.</p>
+  </div>
+
+  <h2>آثار التطرف</h2>
+  <div class="section-box">
+    <h3>على الفرد</h3>
+    <p>يفقد الشخص المتطرف علاقاته الاجتماعية واحدة تلو الأخرى، ويعيش في توتر دائم يؤثر على صحته. كثيراً ما يخسر فرصاً دراسية أو مهنية بسبب سلوكه المتشدد وصعوبة التعامل معه.</p>
+    <h3>على المجتمع</h3>
+    <p>انتشار التطرف يؤدي إلى تفكك الروابط الاجتماعية وانتشار الكراهية والانقسام. يضعف التعاون والإنتاجية، ويتراجع الأمن والاستقرار، مما ينعكس سلباً على التنمية الاقتصادية والاجتماعية.</p>
+  </div>
+
+  <h2>تأثير وسائل التواصل الاجتماعي</h2>
+  <div class="section-box">
+    <h3>المحتوى المضلل</h3>
+    <p>الإنترنت مليء بالمحتوى المزيف أو المنقوص الذي يُصاغ بطريقة مثيرة لتحريك المشاعر. هذا المحتوى يُبسّط قضايا بالغة التعقيد ويقدم حلولاً سهلة وجاهزة، مما يجعله جذاباً للعقول الباحثة عن يقين.</p>
+    <h3>تكرار الأفكار — الفقاعة الفكرية</h3>
+    <p>خوارزميات وسائل التواصل تعرض للمستخدم باستمرار فقط ما يتفق مع آرائه، فيعتقد تدريجياً أن الجميع يفكر مثله، مما يعزز قناعاته بشكل مصطنع ويقطعه عن الصورة الحقيقية للواقع.</p>
+    <h3>التأثير على الشباب</h3>
+    <p>الشباب هم الأكثر استخداماً لوسائل التواصل والأكثر تأثراً بها، لأنهم في مرحلة تشكيل الهوية. الاستخدام غير الواعي يجعلهم فريسة سهلة لاستقطاب الأفكار المتطرفة.</p>
+  </div>
+
+  <h2>أثر التطرف على مستقبل الشباب</h2>
+  <div class="section-box">
+    <h3>ضياع الفرص</h3>
+    <p>الشاب المتطرف فكرياً يفقد فرصاً دراسية ومهنية كثيرة، لأن التطرف يجعله صعب التعامل معه في بيئات العمل التي تتطلب الانفتاح والتعاون.</p>
+    <h3>ضعف مهارة التفكير</h3>
+    <p>الانغلاق الفكري يوقف نمو العقل. الشاب الذي لا يستمع ولا يتعلم من الاختلاف يبقى في مكانه فكرياً بينما يتقدم من حوله بخطى متسارعة.</p>
+    <h3>التأثر بالبيئة المحيطة</h3>
+    <p>الشباب في مرحلة تشكيل الهوية هم الأكثر عرضة للاستقطاب من جماعات متطرفة تستغل حاجتهم للانتماء والمعنى. الوعي المبكر هو خط الدفاع الأول.</p>
+  </div>
+
+
+</div>
+
+<!-- ===================== صفحة 5: الوقاية والحلول ===================== -->
+<div class="page-content" id="page-5">
+  <div class="page-header">
+    <span class="page-icon">🛡️</span>
+    <div class="page-title-wrap">
+      <h1>الوقاية والحلول</h1>
+      <p>دور الأسرة والمدرسة والحوار في مواجهة التطرف</p>
+    </div>
+  </div>
+
+  <h2>دور الأسرة في مواجهة التطرف</h2>
+  <div class="section-box">
+    <h3>الحوار داخل الأسرة</h3>
+    <p>الأسرة التي تشجع على الحوار الصريح والمحترم تبني لدى أبنائها مناعة فكرية حقيقية. حين يستطيع الابن التعبير عن أفكاره بأمان في البيت، لن يضطر للبحث عن "جماعة" خارجية توفر له الانتماء.</p>
+    <h3>متابعة الأبناء</h3>
+    <p>المتابعة الصحية لا تعني التجسس، بل تعني الاهتمام الحقيقي بما يشاهده الأبناء ومن يصادقون. الملاحظة المبكرة للتغيرات السلوكية تتيح التدخل الوقائي في الوقت المناسب.</p>
+    <h3>زرع القيم الإيجابية</h3>
+    <p>تعليم الأبناء منذ الصغر قيم التسامح واحترام الاختلاف يبني شخصية متوازنة قادرة على مواجهة الأفكار المتطرفة بثقة دون الانجراف نحوها.</p>
+  </div>
+
+  <h2>دور المدرسة في التوعية</h2>
+  <div class="section-box">
+    <h3>تعليم التفكير النقدي</h3>
+    <p>المدرسة التي تعلم الطالب كيف يفكر بشكل مستقل لا فقط ماذا يحفظ، تمنحه أدوات لتحليل المعلومات وكشف الزيف. التفكير النقدي هو التطعيم الأمتن ضد الأفكار المتطرفة.</p>
+    <h3>الأنشطة الجماعية</h3>
+    <p>العمل الجماعي في المدرسة يعلم الطالب كيف يتعاون مع من يختلف عنه ويقدر إسهاماتهم. هذه التجارب اليومية تبني قدرته على التعايش والعمل المشترك.</p>
+    <h3>النقاشات الصفية</h3>
+    <p>الفصل الذي يشجع على النقاش الهادئ المبني على الحجة والدليل يعلم الطالب أن الاختلاف في الرأي أمر طبيعي ومثري، وأن الفوز في النقاش بالحجة الأقوى لا بالصوت الأعلى.</p>
+  </div>
+
+  <h2>نتائج الحوار في تقليل التطرف</h2>
+  <div class="section-box">
+    <h3>احترام الرأي الآخر</h3>
+    <p>الحوار الحقيقي يعلم الإنسان أن الرأي المختلف ليس عدواً، بل فرصة لاختبار أفكاره وتطويرها. من يمارس الحوار بانتظام يصبح أكثر انفتاحاً وتوازناً فكرياً.</p>
+    <h3>الاستماع الجيد</h3>
+    <p>الاستماع الفعّال هو أن تسمع لتفهم وتتعلم لا فقط لترد. حين يستمع الإنسان بهذه الطريقة، يكتشف أن الآخرين يملكون تجارب غنية تستحق الاحترام والتأمل.</p>
+    <h3>النقاش الهادئ</h3>
+    <p>النقاش الهادئ القائم على الأدلة والمنطق يحل الخلافات ويبني الجسور بين الناس، ويفتح آفاقاً للتفكير لم تكن متاحة من قبل.</p>
+  </div>
+
+  <h2>كيف نحمي أنفسنا من التطرف؟</h2>
+  <div class="section-box">
+    <h3>التفكير النقدي</h3>
+    <p>قبل قبول أي فكرة، اسأل دائماً: من قالها؟ ما الدليل عليها؟ هل هناك رأي آخر لم أره بعد؟ التساؤل المنتظم يحميك من التضليل.</p>
+    <h3>الانفتاح على الآراء المختلفة</h3>
+    <p>اقرأ واستمع لوجهات نظر متنوعة. هذا لا يعني تبنيها، بل يعني فهم الصورة الكاملة من كل زواياها قبل إصدار أي حكم.</p>
+    <h3>اختيار الأصدقاء</h3>
+    <p>أحط نفسك بأشخاص يشجعونك على التفكير المستقل. الأصدقاء الجيدون يثرون عقلك ويوسعون أفقك ولا يقيدونك.</p>
+    <h3>تنظيم استخدام الإنترنت</h3>
+    <p>حدد وقتاً معقولاً لوسائل التواصل. تابع مصادر موثوقة ومتنوعة. تجنب إدمان المحتوى الذي يحرك مشاعرك فقط دون دليل حقيقي.</p>
+    <h3>الحوار المستمر</h3>
+    <p>مارس الحوار بانتظام وبنية صادقة للفهم. الشخص الذي يتحاور باستمرار يطور قدرته على التعامل مع الاختلاف بهدوء وثقة.</p>
+  </div>
+
+
+</div>
+
+<!-- ===================== صفحة 6: الخاتمة ===================== -->
+<div class="page-content" id="page-6">
+  <div class="page-header">
+    <span class="page-icon">✅</span>
+    <div class="page-title-wrap">
+      <h1>الخاتمة</h1>
+      <p>كيف نبني فكراً متوازناً ومجتمعاً صحياً؟</p>
+    </div>
+  </div>
+
+  <div class="highlight-box">
+    <h3 style="color:#00bcd4;margin-top:0;font-size:1.15em">⚠️ فكرة مهمة جداً</h3>
+    <p>التطرف لا يبدأ بالعنف ولا بالكراهية الصريحة.<br><br>
+    يبدأ بـ <strong style="color:#ff8a65">عدم التقبّل</strong> ... ثم يتحول إلى <strong style="color:#ffa726">رفض</strong> ... ثم إلى <strong style="color:#ef5350">العداء الصريح</strong>.<br><br>
+    <em style="color:#80deea">من يفهم هذا المسار يستطيع إيقافه من أوله قبل فوات الأوان.</em></p>
+  </div>
+
+  <h2>كيف نبني فكراً متوازناً؟</h2>
+  <div class="section-box">
+    <h3>التعلم المستمر</h3>
+    <p>العقل المتوازن هو العقل الذي لا يتوقف عن التعلم. القراءة المنتظمة في مجالات متنوعة توسع الأفق وتجعلك أقل عرضة للأفكار الضيقة الجاهزة.</p>
+    <h3>الانفتاح الفكري</h3>
+    <p>الانفتاح الفكري لا يعني التخلي عن قيمك ومبادئك، بل يعني الاستعداد لمراجعة أفكارك عند وجود دليل جديد أو حجة أقوى. هذه الصفة هي ما يميز العقل الناضج عن العقل المتصلب.</p>
+    <h3>التحليل قبل الحكم</h3>
+    <p>قبل إصدار أي حكم، خذ وقتاً للتحليل الهادئ والنظر في كل الجوانب. الحكم المتسرع المبني على العاطفة وحدها هو بوابة التطرف الكبرى.</p>
+  </div>
+
+  <h2>الخاتمة</h2>
+  <div class="section-box">
+    <h3>أهمية الوعي</h3>
+    <p>الوعي هو السلاح الأقوى في مواجهة التطرف. الإنسان الواعي يعرف كيف يميز بين الرأي الحر المسؤول والتطرف المدمر، وكيف يحمي نفسه ومن يحب من الوقوع في هذا الفخ.</p>
+    <h3>دور الفرد في المجتمع</h3>
+    <p>كل فرد مسؤول عن مجتمعه مسؤولية حقيقية. حين تكون أنت نموذجاً للانفتاح والحوار والتسامح في سلوكك اليومي، تلهم من حولك وتساهم في بناء ثقافة اجتماعية صحية ترفض التطرف.</p>
+    <h3>بناء مجتمع متوازن</h3>
+    <p>المجتمع المتوازن يُبنى بتراكم الأفعال الصغيرة اليومية: حوار هادئ هنا، وقراءة متنوعة هناك، واحترام للاختلاف في كل مكان. كل خطوة صغيرة نحو الوعي هي خطوة نحو مجتمع أفضل وأكثر إنسانية وأماناً للجميع.</p>
+  </div>
+
+
+</div>
+
+<!-- ===================== الفوتر ===================== -->
+<footer>
+  <div class="team-name">✦ اسامه عقل &amp; علي سحويل ✦</div>
+  <p style="color:#00bcd4;margin:10px 0 4px;font-size:0.9em">بالتعاون مع مدرسة عبد الملك بن مروان الثانوية</p>
+  <p style="color:#445566;margin:8px 0 4px">مشروع توعوي تعليمي عن التطرف الفكري</p>
+  <div class="footer-note">"الوعي خط الدفاع الأول" — جميع الحقوق محفوظة للمشروع</div>
+</footer>
+
+</div><!-- end main-container -->
+</div><!-- end main-site -->
+
+<!-- زر العودة للأعلى -->
+<button id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="العودة للأعلى">↑</button>
+
+<script>
+/* ===== نظام الصفحات ===== */
+var currentPage = 0;
+var totalPages = 7;
+
+function goPage(n) {
+  document.getElementById('page-' + currentPage).classList.remove('active');
+  document.getElementById('tab-' + currentPage).classList.remove('active');
+  currentPage = n;
+  document.getElementById('page-' + n).classList.add('active');
+  document.getElementById('tab-' + n).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+  document.getElementById('progress-bar').style.width = '0%';
+}
+
+/* ===== شريط التقدم وزر العودة ===== */
+window.addEventListener('scroll', function() {
+  var scrollable = document.documentElement.scrollHeight - window.innerHeight;
+  var scrolled = window.scrollY;
+  if(scrollable > 0) document.getElementById('progress-bar').style.width = ((scrolled/scrollable)*100) + '%';
+  document.getElementById('back-to-top').style.display = scrolled > 300 ? 'block' : 'none';
+});
+
+/* ===== لوحة الإعدادات ===== */
+var settingsOpen = false;
+function toggleSettings() {
+  settingsOpen = !settingsOpen;
+  document.getElementById('settings-panel').classList.toggle('open', settingsOpen);
+  document.getElementById('settings-overlay').classList.toggle('open', settingsOpen);
+}
+
+/* --- حجم الخط --- */
+function applyFontSize(val) {
+  document.querySelector('.main-container').style.fontSize = val + '%';
+  document.getElementById('font-size-val').textContent = val + '%';
+  localStorage.setItem('acc_fontSize', val);
+}
+
+/* --- تباعد الأسطر --- */
+function applyLineHeight(val) {
+  var lh = (val / 100).toFixed(1);
+  document.querySelector('.main-container').style.lineHeight = lh;
+  document.getElementById('line-height-val').textContent = lh;
+  localStorage.setItem('acc_lineHeight', val);
+}
+
+/* --- تباعد الحروف --- */
+function applyLetterSpacing(val) {
+  document.querySelector('.main-container').style.letterSpacing = val + 'px';
+  document.getElementById('letter-spacing-val').textContent = val + 'px';
+  localStorage.setItem('acc_letterSpacing', val);
+}
+
+/* --- تباين عالٍ --- */
+function applyHighContrast(on) {
+  if (on) {
+    document.body.style.setProperty('--hc', '1');
+    document.querySelectorAll('p, li, .section-box, .highlight-box').forEach(function(el) {
+      el.style.color = '#ffffff';
+      el.style.textShadow = '0 0 1px #000';
+    });
+    document.querySelectorAll('.section-box').forEach(function(el){
+      el.style.background = 'rgba(0,0,0,0.95)';
+      el.style.borderColor = '#00ffff';
+    });
+  } else {
+    document.querySelectorAll('p, li, .section-box, .highlight-box').forEach(function(el) {
+      el.style.color = '';
+      el.style.textShadow = '';
+    });
+    document.querySelectorAll('.section-box').forEach(function(el){
+      el.style.background = '';
+      el.style.borderColor = '';
+    });
+  }
+  localStorage.setItem('acc_highContrast', on ? '1' : '0');
+}
+
+/* --- رمادي --- */
+function applyGrayscale(on) {
+  document.body.style.filter = on ? 'grayscale(100%)' : '';
+  localStorage.setItem('acc_grayscale', on ? '1' : '0');
+}
+
+/* --- تمييز الروابط --- */
+function applyHighlightLinks(on) {
+  var style = document.getElementById('highlight-links-style');
+  if (!style) {
+    style = document.createElement('style');
+    style.id = 'highlight-links-style';
+    document.head.appendChild(style);
+  }
+  style.textContent = on ? '.page-tab,.page-card,.sp-color-btn{outline:2px solid #00bcd4!important;text-decoration:underline}' : '';
+  localStorage.setItem('acc_highlightLinks', on ? '1' : '0');
+}
+
+/* --- تقليل الحركة --- */
+function applyReduceMotion(on) {
+  var style = document.getElementById('reduce-motion-style');
+  if (!style) {
+    style = document.createElement('style');
+    style.id = 'reduce-motion-style';
+    document.head.appendChild(style);
+  }
+  style.textContent = on ? '*{animation-duration:0.001s!important;transition-duration:0.001s!important}' : '';
+  localStorage.setItem('acc_reduceMotion', on ? '1' : '0');
+}
+
+/* --- إيقاف الكيرسور المضيء --- */
+function applyCursorEffects(off) {
+  var cursor = document.getElementById('custom-cursor');
+  if (cursor) cursor.style.display = off ? 'none' : 'block';
+  window._cursorEffectsOff = off;
+  localStorage.setItem('acc_cursorOff', off ? '1' : '0');
+}
+
+/* --- إيقاف توهج الخلفية --- */
+function applyGlow(off) {
+  document.querySelectorAll('.bg-glow').forEach(function(el){
+    el.style.display = off ? 'none' : 'block';
+  });
+  localStorage.setItem('acc_glowOff', off ? '1' : '0');
+}
+
+/* --- تمييز التركيز --- */
+function applyFocusHighlight(on) {
+  var style = document.getElementById('focus-style');
+  if (!style) {
+    style = document.createElement('style');
+    style.id = 'focus-style';
+    document.head.appendChild(style);
+  }
+  style.textContent = on ? '*:focus{outline:3px solid #ffeb3b!important;outline-offset:3px!important}' : '';
+  localStorage.setItem('acc_focus', on ? '1' : '0');
+}
+
+/* --- قراءة النص بصوت (TTS) --- */
+var ttsEnabled = false;
+var ttsUtterance = null;
+
+function applyTTS(on) {
+  ttsEnabled = on;
+  document.getElementById('tts-voice-row').style.display = on ? 'flex' : 'none';
+  if (!on && window.speechSynthesis) window.speechSynthesis.cancel();
+
+  if (on) {
+    document.querySelectorAll('.main-container p, .main-container li, .main-container h2, .main-container h3').forEach(function(el) {
+      el.style.cursor = 'pointer!important';
+      el.setAttribute('title', 'اضغط للاستماع');
+      el.addEventListener('click', speakElement);
+    });
+  } else {
+    document.querySelectorAll('.main-container p, .main-container li, .main-container h2, .main-container h3').forEach(function(el) {
+      el.removeEventListener('click', speakElement);
+      el.removeAttribute('title');
+      el.style.outline = '';
+    });
+  }
+  localStorage.setItem('acc_tts', on ? '1' : '0');
+}
+
+function speakElement(e) {
+  if (!ttsEnabled || !window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  var text = e.currentTarget.textContent.trim();
+  var rate = parseFloat(document.getElementById('tts-speed').value) || 1;
+  var utt = new SpeechSynthesisUtterance(text);
+  utt.lang = 'ar-SA';
+  utt.rate = rate;
+  e.currentTarget.style.outline = '2px solid #00bcd4';
+  utt.onend = function() { e.currentTarget.style.outline = ''; };
+  window.speechSynthesis.speak(utt);
+}
+
+/* --- لون خلفية النص --- */
+function applyTextBg(color, btn) {
+  document.querySelectorAll('.sp-color-btn').forEach(function(b){ b.classList.remove('active'); b.style.borderColor='transparent'; });
+  btn.classList.add('active');
+  btn.style.borderColor = '#00bcd4';
+  var boxes = document.querySelectorAll('.section-box, .highlight-box, .watch-guide');
+  if (color === 'none') {
+    boxes.forEach(function(el){ el.style.backgroundColor = ''; });
+  } else {
+    boxes.forEach(function(el){ el.style.backgroundColor = color; });
+    var isDark = color === '#2d2d2d';
+    document.querySelectorAll('.section-box p, .section-box li, .highlight-box p').forEach(function(el){
+      el.style.color = isDark ? '#f0f0f0' : '#111';
+    });
+  }
+  localStorage.setItem('acc_textBg', color);
+}
+
+/* --- إعادة الضبط --- */
+function resetAll() {
+  applyFontSize(100); document.getElementById('font-size-slider').value = 100;
+  applyLineHeight(190); document.getElementById('line-height-slider').value = 190;
+  applyLetterSpacing(0); document.getElementById('letter-spacing-slider').value = 0;
+  applyHighContrast(false); document.getElementById('high-contrast-toggle').checked = false;
+  applyGrayscale(false); document.getElementById('grayscale-toggle').checked = false;
+  applyHighlightLinks(false); document.getElementById('highlight-links-toggle').checked = false;
+  applyReduceMotion(false); document.getElementById('reduce-motion-toggle').checked = false;
+  applyCursorEffects(false); document.getElementById('cursor-effects-toggle').checked = false;
+  applyGlow(false); document.getElementById('glow-toggle').checked = false;
+  applyFocusHighlight(false); document.getElementById('focus-highlight-toggle').checked = false;
+  applyTTS(false); document.getElementById('tts-toggle').checked = false;
+  applyTextBg('none', document.querySelector('.sp-color-btn[data-bg="none"]'));
+  localStorage.clear();
+}
+
+/* --- تحميل الإعدادات المحفوظة --- */
+window.addEventListener('load', function() {
+  var fs = localStorage.getItem('acc_fontSize');
+  if (fs) { applyFontSize(fs); document.getElementById('font-size-slider').value = fs; }
+  var lh = localStorage.getItem('acc_lineHeight');
+  if (lh) { applyLineHeight(lh); document.getElementById('line-height-slider').value = lh; }
+  var ls = localStorage.getItem('acc_letterSpacing');
+  if (ls) { applyLetterSpacing(ls); document.getElementById('letter-spacing-slider').value = ls; }
+  if (localStorage.getItem('acc_highContrast') === '1') { applyHighContrast(true); document.getElementById('high-contrast-toggle').checked = true; }
+  if (localStorage.getItem('acc_grayscale') === '1') { applyGrayscale(true); document.getElementById('grayscale-toggle').checked = true; }
+  if (localStorage.getItem('acc_highlightLinks') === '1') { applyHighlightLinks(true); document.getElementById('highlight-links-toggle').checked = true; }
+  if (localStorage.getItem('acc_reduceMotion') === '1') { applyReduceMotion(true); document.getElementById('reduce-motion-toggle').checked = true; }
+  if (localStorage.getItem('acc_cursorOff') === '1') { applyCursorEffects(true); document.getElementById('cursor-effects-toggle').checked = true; }
+  if (localStorage.getItem('acc_glowOff') === '1') { applyGlow(true); document.getElementById('glow-toggle').checked = true; }
+  if (localStorage.getItem('acc_focus') === '1') { applyFocusHighlight(true); document.getElementById('focus-highlight-toggle').checked = true; }
+  if (localStorage.getItem('acc_tts') === '1') { applyTTS(true); document.getElementById('tts-toggle').checked = true; }
+});
+
+
+
+
+/* ===== شاشة الترحيب ===== */
+var introSnowInterval=null;
+
+function drawBolt(ctx,x1,y1,x2,y2,depth){
+  if(depth<0)return;
+  var pts=[{x:x1,y:y1}];
+  var segs=14+Math.floor(Math.random()*6);
+  for(var i=1;i<segs;i++){
+    var t=i/segs;
+    var jagged=depth===2?70:depth===1?40:20;
+    pts.push({x:x1+(x2-x1)*t+(Math.random()-0.5)*jagged,y:y1+(y2-y1)*t+(Math.random()-0.5)*jagged*0.6});
+  }
+  pts.push({x:x2,y:y2});
+  ctx.beginPath();
+  ctx.strokeStyle=depth===2?'rgba(0,150,255,0.2)':'rgba(0,188,212,0.15)';
+  ctx.lineWidth=depth===2?18:depth===1?10:5;
+  ctx.shadowBlur=60; ctx.shadowColor='#0055ff';
+  ctx.lineCap='round'; ctx.lineJoin='round';
+  ctx.moveTo(pts[0].x,pts[0].y);
+  pts.forEach(function(p){ctx.lineTo(p.x,p.y);}); ctx.stroke();
+  ctx.beginPath();
+  ctx.strokeStyle=depth===2?'rgba(0,220,255,0.5)':'rgba(0,200,255,0.3)';
+  ctx.lineWidth=depth===2?8:depth===1?4:2; ctx.shadowBlur=30; ctx.shadowColor='#00bcd4';
+  ctx.moveTo(pts[0].x,pts[0].y);
+  pts.forEach(function(p){ctx.lineTo(p.x,p.y);}); ctx.stroke();
+  ctx.beginPath();
+  ctx.strokeStyle=depth===2?'#00eeff':'rgba(100,230,255,0.8)';
+  ctx.lineWidth=depth===2?2.5:depth===1?1.5:0.8; ctx.shadowBlur=10; ctx.shadowColor='#00ffff';
+  ctx.moveTo(pts[0].x,pts[0].y);
+  pts.forEach(function(p){ctx.lineTo(p.x,p.y);}); ctx.stroke();
+  ctx.beginPath();
+  ctx.strokeStyle='rgba(255,255,255,'+(depth===2?'1':'0.7')+')';
+  ctx.lineWidth=depth===2?1.2:0.6; ctx.shadowBlur=0;
+  ctx.moveTo(pts[0].x,pts[0].y);
+  pts.forEach(function(p){ctx.lineTo(p.x,p.y);}); ctx.stroke();
+  if(depth>0){
+    var numB=depth===2?3+Math.floor(Math.random()*3):1+Math.floor(Math.random()*2);
+    for(var b=0;b<numB;b++){
+      var bIdx=Math.floor(pts.length*0.2+Math.random()*pts.length*0.6);
+      var bpt=pts[bIdx];
+      var angle=(Math.random()-0.5)*Math.PI*1.4;
+      var len=(depth===2?120:70)+Math.random()*100;
+      drawBolt(ctx,bpt.x,bpt.y,bpt.x+Math.cos(angle)*len,bpt.y+Math.sin(angle)*len*0.7,depth-1);
+    }
+  }
+}
+
+function strikeSingleBolt(dir){
+  var canvas=document.getElementById('lightning-canvas');
+  var ctx=canvas.getContext('2d');
+  canvas.width=window.innerWidth; canvas.height=window.innerHeight;
+  var title=document.getElementById('intro-title');
+  var rect=title?title.getBoundingClientRect():null;
+  var cx=rect?(rect.left+rect.right)/2:canvas.width/2;
+  var cy=rect?rect.top+rect.height/2:canvas.height/2;
+  var r=Math.random;
+  var targets={
+    top:{bx:cx+(r()-0.5)*100,by:cy-350-r()*180},
+    bottom:{bx:cx+(r()-0.5)*100,by:cy+350+r()*180},
+    right:{bx:cx+350+r()*180,by:cy+(r()-0.5)*100},
+    left:{bx:cx-350-r()*180,by:cy+(r()-0.5)*100},
+    topright:{bx:cx+280+r()*120,by:cy-280-r()*120},
+    topleft:{bx:cx-280-r()*120,by:cy-280-r()*120},
+    bottomright:{bx:cx+280+r()*120,by:cy+280+r()*120},
+    bottomleft:{bx:cx-280-r()*120,by:cy+280+r()*120}
+  };
+  var d=targets[dir]||targets.top;
+  drawBolt(ctx,cx,cy,d.bx,d.by,2);
+  if(title){title.style.textShadow='0 0 60px #fff,0 0 120px #00bcd4,0 0 200px #0055ff';setTimeout(function(){title.style.textShadow='0 0 40px #00bcd4,0 0 80px #0055ff';},180);}
+  var is=document.getElementById('intro-screen');
+  is.style.background='rgba(0,40,100,0.95)';
+  setTimeout(function(){is.style.background='radial-gradient(ellipse at center,#000820 0%,#000005 100%)';},100);
+  setTimeout(function(){ctx.clearRect(0,0,canvas.width,canvas.height);},260);
+}
+
+var allDirs=['top','bottom','right','left','topright','topleft','bottomright','bottomleft'];
+
+function fireRandomBolts(count,spread){
+  var shuffled=allDirs.slice().sort(function(){return Math.random()-0.5;});
+  for(var i=0;i<count;i++){
+    (function(dir,delay){setTimeout(function(){strikeSingleBolt(dir);},delay);})(shuffled[i%shuffled.length],Math.random()*spread);
+  }
+}
+
+function createIntroSnow(){
+  var symbols=["❄","❅","❆","·","•","✦","✧","*","❋","✼"];
+  var snow=document.createElement("div");
+  snow.classList.add("intro-snow");
+  snow.innerHTML=symbols[Math.floor(Math.random()*symbols.length)];
+  var size=Math.random()*25+8;
+  snow.style.fontSize=size+"px";
+  snow.style.left=(Math.random()*100)+"vw";
+  snow.style.top="-50px";
+  snow.style.color=Math.random()>0.6?'#a0e8ff':'#ffffff';
+  snow.style.opacity=(Math.random()*0.6+0.4).toString();
+  var duration=Math.random()*1.5+0.8;
+  snow.style.animationDuration=duration+"s";
+  snow.style.setProperty('--drift',((Math.random()-0.5)*150)+'px');
+  snow.style.setProperty('--spin',((Math.random()-0.5)*720)+'deg');
+  document.getElementById('intro-screen').appendChild(snow);
+  setTimeout(function(){if(snow.parentNode)snow.remove();},(duration+0.3)*1000);
+}
+
+function startIntro(){
+  var introScreen=document.getElementById('intro-screen');
+  var mainSite=document.getElementById('main-site');
+  setTimeout(function(){fireRandomBolts(3,600);},1400);
+  setTimeout(function(){fireRandomBolts(2,400);},2200);
+  setTimeout(function(){fireRandomBolts(3,500);},2800);
+  setTimeout(function(){
+    introSnowInterval=setInterval(createIntroSnow,18);
+    for(var i=0;i<100;i++) setTimeout(createIntroSnow,i*12);
+    setTimeout(function(){fireRandomBolts(2,300);},200);
+    setTimeout(function(){fireRandomBolts(3,500);},800);
+    setTimeout(function(){fireRandomBolts(2,400);},1500);
+    setTimeout(function(){fireRandomBolts(3,600);},2000);
+    setTimeout(function(){
+      clearInterval(introSnowInterval);
+      introScreen.classList.add('fade-out');
+      setTimeout(function(){
+        introScreen.style.display='none';
+        mainSite.classList.add('visible');
+      },1200);
+    },2800);
+  },3000);
+}
+window.addEventListener('load',startIntro);
+
+/* ===== كيرسور ===== */
+var cursorEl=document.createElement('div');
+cursorEl.id='custom-cursor';
+document.body.appendChild(cursorEl);
+var hue=180,lastTrailTime=0;
+setInterval(function(){
+  hue=(hue+2)%360;
+  cursorEl.style.background='radial-gradient(circle,#fff,hsl('+hue+',100%,60%))';
+  cursorEl.style.boxShadow='0 0 12px hsl('+hue+',100%,70%),0 0 30px hsl('+hue+',100%,50%)';
+},16);
+document.addEventListener('mousemove',function(e){
+  cursorEl.style.left=e.clientX+'px';
+  cursorEl.style.top=e.clientY+'px';
+  var now=Date.now();
+  if(now-lastTrailTime>20){
+    lastTrailTime=now;
+    var trail=document.createElement('div');
+    trail.classList.add('cursor-trail');
+    var size=Math.random()*10+5;
+    trail.style.width=size+'px'; trail.style.height=size+'px';
+    trail.style.left=e.clientX+'px'; trail.style.top=e.clientY+'px';
+    trail.style.background='radial-gradient(circle,hsl('+(hue+(Math.random()-0.5)*60)+',100%,80%),transparent)';
+    var duration=Math.random()*0.5+0.3;
+    trail.style.animationDuration=duration+'s';
+    document.body.appendChild(trail);
+    setTimeout(function(){if(trail.parentNode)trail.remove();},duration*1000);
+  }
+});
+</script>
+</body>
+</html>
