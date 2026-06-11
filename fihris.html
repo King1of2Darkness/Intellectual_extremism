@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>الرئيسية — التطرف الفكري</title>
+<title>الفهرس — التطرف الفكري</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -159,47 +159,110 @@
 
 <div class="main-container">
 
-  <h1>التطرف الفكري</h1>
-  <p style="text-align:center;color:#00bcd4;font-size:1.05em;margin:-12px 0 6px;letter-spacing:2px">مدرسة عبد الملك بن مروان الثانوية</p>
-  <p style="text-align:center;color:#8899aa;font-size:0.92em;margin-bottom:30px">مقال توعوي شامل يشرح مفهوم التطرف الفكري، أسبابه، آثاره، وطرق الوقاية منه</p>
-
-  <div class="highlight-box">
-    <h3 style="color:#00bcd4;margin-top:0">فكرة مهمة جداً</h3>
-    <p>التطرف لا يبدأ بالعنف ولا بالكراهية الصريحة.<br><br>
-    يبدأ بـ <strong style="color:#ff8a65">عدم التقبّل</strong> ... ثم يتحول إلى <strong style="color:#ffa726">رفض</strong> ... ثم إلى <strong style="color:#ef5350">العداء الصريح</strong>.<br><br>
-    <em style="color:#80deea">من يفهم هذا المسار يستطيع إيقافه من أوله قبل فوات الأوان.</em></p>
-  </div>
-
-  <h2 style="text-align:center;border:none;margin-bottom:15px">محتويات الموقع</h2>
-  <div class="pages-grid">
-    <div class="page-card" onclick="goPage(1)">
-      <span class="pc-title">الفيديو والمدخل</span>
-      <span class="pc-desc">ابدأ من هنا — شاهد الفيديو التعليمي واقرأ مدخل الموضوع</span>
-    </div>
-    <div class="page-card" onclick="goPage(2)">
-      <span class="pc-title">المفهوم والتعريف</span>
-      <span class="pc-desc">ما هو التطرف الفكري؟ وكيف يختلف عن الرأي الطبيعي؟</span>
-    </div>
-    <div class="page-card" onclick="goPage(3)">
-      <span class="pc-title">الأسباب والتطور</span>
-      <span class="pc-desc">لماذا يتطرف الإنسان؟ وكيف تتطور الفكرة المتطرفة مراحلياً؟</span>
-    </div>
-    <div class="page-card" onclick="goPage(4)">
-      <span class="pc-title">الآثار والتأثيرات</span>
-      <span class="pc-desc">تأثير التطرف على الفرد والمجتمع ووسائل التواصل والشباب</span>
-    </div>
-    <div class="page-card" onclick="goPage(5)">
-      <span class="pc-title">الوقاية والحلول</span>
-      <span class="pc-desc">دور الأسرة والمدرسة والحوار في مواجهة التطرف</span>
-    </div>
-    <div class="page-card" onclick="goPage(6)">
-      <span class="pc-title">الخاتمة</span>
-      <span class="pc-desc">كيف نبني فكراً متوازناً ومجتمعاً صحياً؟</span>
+  <div class="page-header">
+    <div class="page-title-wrap">
+      <h1>الفهرس</h1>
+      <p>جميع موضوعات الموقع مرتبة بالتفصيل — اضغط على أي عنوان للانتقال إليه</p>
     </div>
   </div>
 
-  <div class="section-box" style="margin-top:20px;text-align:center">
-    <p style="color:#8899aa;font-size:0.88em">استخدم شريط التنقل أعلاه للتنقل بين الصفحات، أو اضغط على البطاقات أعلاه للانتقال مباشرة.<br>يمكنك أيضاً الضغط على زر <strong style="color:#00bcd4">الفهرس</strong> في الأعلى لرؤية كل المحتويات من أي صفحة.</p>
+  <div class="toc-container">
+    <div class="toc-chapter" id="toc-ch1">
+      <div class="toc-chapter-title" onclick="toggleChapter('toc-ch1')">
+        <div class="toc-chapter-num">1</div>
+        <span class="toc-chapter-name">الفيديو والمدخل</span>
+        <span class="toc-chapter-arrow">&#9654;</span>
+      </div>
+      <div class="toc-items">
+        <div class="toc-item" onclick="goPageSection(1)"><div class="toc-item-dot"></div><span class="toc-item-text">الفيديو التعليمي</span></div>
+        <div class="toc-item" onclick="goPageSection(1)"><div class="toc-item-dot"></div><span class="toc-item-text">أهمية فهم التطرف في المجتمع</span></div>
+        <div class="toc-item" onclick="goPageSection(1)"><div class="toc-item-dot"></div><span class="toc-item-text">لماذا يُعتبر التطرف مشكلة خطيرة؟</span></div>
+        <div class="toc-item" onclick="goPageSection(1)"><div class="toc-item-dot"></div><span class="toc-item-text">انتشار الظاهرة في العصر الحديث</span></div>
+      </div>
+    </div>
+    <div class="toc-chapter" id="toc-ch2">
+      <div class="toc-chapter-title" onclick="toggleChapter('toc-ch2')">
+        <div class="toc-chapter-num">2</div>
+        <span class="toc-chapter-name">المفهوم والتعريف</span>
+        <span class="toc-chapter-arrow">&#9654;</span>
+      </div>
+      <div class="toc-items">
+        <div class="toc-item" onclick="goPageSection(2)"><div class="toc-item-dot"></div><span class="toc-item-text">تعريف التطرف الفكري</span></div>
+        <div class="toc-item" onclick="goPageSection(2)"><div class="toc-item-dot"></div><span class="toc-item-text">خصائص التفكير المتطرف</span></div>
+        <div class="toc-item" onclick="goPageSection(2)"><div class="toc-item-dot"></div><span class="toc-item-text">متى يتحول الرأي إلى تطرف؟</span></div>
+        <div class="toc-item" onclick="goPageSection(2)"><div class="toc-item-dot"></div><span class="toc-item-text">الفرق بين الرأي الطبيعي والتطرف</span></div>
+        <div class="toc-item" onclick="goPageSection(2)"><div class="toc-item-dot"></div><span class="toc-item-text">فقدان المرونة في التفكير</span></div>
+        <div class="toc-item" onclick="goPageSection(2)"><div class="toc-item-dot"></div><span class="toc-item-text">رفض تقبّل الآخر</span></div>
+        <div class="toc-item" onclick="goPageSection(2)"><div class="toc-item-dot"></div><span class="toc-item-text">علامات الشخص المتطرف</span></div>
+      </div>
+    </div>
+    <div class="toc-chapter" id="toc-ch3">
+      <div class="toc-chapter-title" onclick="toggleChapter('toc-ch3')">
+        <div class="toc-chapter-num">3</div>
+        <span class="toc-chapter-name">الأسباب والتطور</span>
+        <span class="toc-chapter-arrow">&#9654;</span>
+      </div>
+      <div class="toc-items">
+        <div class="toc-item" onclick="goPageSection(3)"><div class="toc-item-dot"></div><span class="toc-item-text">المرحلة الأولى — بداية الفكرة</span></div>
+        <div class="toc-item" onclick="goPageSection(3)"><div class="toc-item-dot"></div><span class="toc-item-text">المرحلة الثانية — الاقتناع</span></div>
+        <div class="toc-item" onclick="goPageSection(3)"><div class="toc-item-dot"></div><span class="toc-item-text">المرحلة الثالثة — التعصب</span></div>
+        <div class="toc-item" onclick="goPageSection(3)"><div class="toc-item-dot"></div><span class="toc-item-text">المرحلة الرابعة — السلوك</span></div>
+        <div class="toc-item" onclick="goPageSection(3)"><div class="toc-item-dot"></div><span class="toc-item-text">الجهل وقلة الوعي</span></div>
+        <div class="toc-item" onclick="goPageSection(3)"><div class="toc-item-dot"></div><span class="toc-item-text">الشعور بالظلم أو الفشل</span></div>
+        <div class="toc-item" onclick="goPageSection(3)"><div class="toc-item-dot"></div><span class="toc-item-text">تأثير الإنترنت ووسائل التواصل</span></div>
+        <div class="toc-item" onclick="goPageSection(3)"><div class="toc-item-dot"></div><span class="toc-item-text">الصحبة السيئة</span></div>
+        <div class="toc-item" onclick="goPageSection(3)"><div class="toc-item-dot"></div><span class="toc-item-text">الحالة النفسية</span></div>
+      </div>
+    </div>
+    <div class="toc-chapter" id="toc-ch4">
+      <div class="toc-chapter-title" onclick="toggleChapter('toc-ch4')">
+        <div class="toc-chapter-num">4</div>
+        <span class="toc-chapter-name">الآثار والتأثيرات</span>
+        <span class="toc-chapter-arrow">&#9654;</span>
+      </div>
+      <div class="toc-items">
+        <div class="toc-item" onclick="goPageSection(4)"><div class="toc-item-dot"></div><span class="toc-item-text">القلق والخوف المستمر</span></div>
+        <div class="toc-item" onclick="goPageSection(4)"><div class="toc-item-dot"></div><span class="toc-item-text">الشعور بالعزلة</span></div>
+        <div class="toc-item" onclick="goPageSection(4)"><div class="toc-item-dot"></div><span class="toc-item-text">فقدان الثقة بالآخرين</span></div>
+        <div class="toc-item" onclick="goPageSection(4)"><div class="toc-item-dot"></div><span class="toc-item-text">آثار التطرف على الفرد</span></div>
+        <div class="toc-item" onclick="goPageSection(4)"><div class="toc-item-dot"></div><span class="toc-item-text">آثار التطرف على المجتمع</span></div>
+        <div class="toc-item" onclick="goPageSection(4)"><div class="toc-item-dot"></div><span class="toc-item-text">المحتوى المضلل في وسائل التواصل</span></div>
+        <div class="toc-item" onclick="goPageSection(4)"><div class="toc-item-dot"></div><span class="toc-item-text">الفقاعة الفكرية</span></div>
+        <div class="toc-item" onclick="goPageSection(4)"><div class="toc-item-dot"></div><span class="toc-item-text">أثر التطرف على مستقبل الشباب</span></div>
+      </div>
+    </div>
+    <div class="toc-chapter" id="toc-ch5">
+      <div class="toc-chapter-title" onclick="toggleChapter('toc-ch5')">
+        <div class="toc-chapter-num">5</div>
+        <span class="toc-chapter-name">الوقاية والحلول</span>
+        <span class="toc-chapter-arrow">&#9654;</span>
+      </div>
+      <div class="toc-items">
+        <div class="toc-item" onclick="goPageSection(5)"><div class="toc-item-dot"></div><span class="toc-item-text">دور الأسرة — الحوار داخل البيت</span></div>
+        <div class="toc-item" onclick="goPageSection(5)"><div class="toc-item-dot"></div><span class="toc-item-text">متابعة الأبناء</span></div>
+        <div class="toc-item" onclick="goPageSection(5)"><div class="toc-item-dot"></div><span class="toc-item-text">زرع القيم الإيجابية</span></div>
+        <div class="toc-item" onclick="goPageSection(5)"><div class="toc-item-dot"></div><span class="toc-item-text">دور المدرسة — تعليم التفكير النقدي</span></div>
+        <div class="toc-item" onclick="goPageSection(5)"><div class="toc-item-dot"></div><span class="toc-item-text">الأنشطة الجماعية</span></div>
+        <div class="toc-item" onclick="goPageSection(5)"><div class="toc-item-dot"></div><span class="toc-item-text">النقاشات الصفية</span></div>
+        <div class="toc-item" onclick="goPageSection(5)"><div class="toc-item-dot"></div><span class="toc-item-text">احترام الرأي الآخر</span></div>
+        <div class="toc-item" onclick="goPageSection(5)"><div class="toc-item-dot"></div><span class="toc-item-text">كيف نحمي أنفسنا من التطرف؟</span></div>
+      </div>
+    </div>
+    <div class="toc-chapter" id="toc-ch6">
+      <div class="toc-chapter-title" onclick="toggleChapter('toc-ch6')">
+        <div class="toc-chapter-num">6</div>
+        <span class="toc-chapter-name">الخاتمة</span>
+        <span class="toc-chapter-arrow">&#9654;</span>
+      </div>
+      <div class="toc-items">
+        <div class="toc-item" onclick="goPageSection(6)"><div class="toc-item-dot"></div><span class="toc-item-text">كيف نبني فكراً متوازناً؟</span></div>
+        <div class="toc-item" onclick="goPageSection(6)"><div class="toc-item-dot"></div><span class="toc-item-text">التعلم المستمر</span></div>
+        <div class="toc-item" onclick="goPageSection(6)"><div class="toc-item-dot"></div><span class="toc-item-text">الانفتاح الفكري</span></div>
+        <div class="toc-item" onclick="goPageSection(6)"><div class="toc-item-dot"></div><span class="toc-item-text">أهمية الوعي</span></div>
+        <div class="toc-item" onclick="goPageSection(6)"><div class="toc-item-dot"></div><span class="toc-item-text">دور الفرد في المجتمع</span></div>
+        <div class="toc-item" onclick="goPageSection(6)"><div class="toc-item-dot"></div><span class="toc-item-text">بناء مجتمع متوازن</span></div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -216,6 +279,6 @@
 <button id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="العودة للأعلى">↑</button>
 
 <script src="script.js"></script>
-<script>buildNav(0);</script>
+<script>buildNav(7);</script>
 </body>
 </html>
